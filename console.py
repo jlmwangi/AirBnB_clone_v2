@@ -2,6 +2,10 @@
 """ Console Module """
 import cmd
 import sys
+import re
+import uuid
+import os
+from datetime import datetime
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -115,16 +119,63 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
+        attrs = ('id', 'created_at', 'updated_at', '__class__')
+
+        #Regexp patterns
+        name_pattern = r'(?P<name>[a-zA-Z_]\w*)'
+        str_pattern = r'"([^"\\]|\\.)*"'
+        int_pattern = r'[-+]?\d+'
+        float_pattern = r'[-+]?\d+\.\d+'
+        param_pattern = r'{}=({}|{}|{})'.format(name_pattern, str_pattern, int_pattern, float_pattern)
+
+        class_matches = re.match(name_pattern, args)
+        param_dict = {}
+
+        if class_matches:
+            class_name = class_matches.group('name')
+            param_str = args[len(class_name):].strip()
+            params = param_str.split(' ')
+            for param in params:
+                param_match = re.match(param_pattern, param)
+                if param_match:
+                    keyname = param_match.group('name')
+                    value = param_match.group(0).split('=')[1]
+                    #handling diff value types
+                    if value.startswith('"') and value.endswith('"'):
+                        value = value[1:-1]
+                        value = value.replace('\\"', '"')#replace double quotes
+                        value = value.replace('_', ' ')#replace sppaces
+                    elif '.' in value:
+                        value = float(value)
+                    else:
+                        value = int(value)
+                    param_dict[keyname] = value
+
+        else:
+            class_name = args
+
+        if not class_name:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
-        print(new_instance.id)
-        storage.save()
+
+        if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+            param_dict.setdefault('id', str(uuid.uuid4()))
+            param_dict.setdefault('created_at', str(datetime.now()))
+            param_dict.setdefault('updated_at', str(datetime.now()))
+            new_instance = HBNBCommand.classes[class_name](**param_dict)
+            newinstance.save()
+            print(new_instance.id)
+        else:
+            new_instance = HBNBCommand.classes[class_name]()
+            for key, value in param_dict.items():
+                if key not in attrs:
+                    setattr(new_instance, key, value)
+            new_instance.save()
+            print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
