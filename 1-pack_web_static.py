@@ -12,7 +12,7 @@ def do_pack():
     try:
         local("sudo mkdir -p versions")
         local("sudo tar -cvzf versions/web_static_{}\
-              .tgz web_static".format(t_s))
+              .tgz web_static/".format(t_s))
         file_path = ("versions/web_static_{}.tgz".format(t_s))
         file_size = os.path.getsize(file_path)
         print(f'web_static packed: versions/web_static_{t_s}.tgz -> {file_size}')
