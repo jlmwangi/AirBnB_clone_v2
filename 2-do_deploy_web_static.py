@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """distribute an archive to my web servers"""
-from fabric.api import rn, env, put
+from fabric.api import run, env, put
 import os
 from fabric.contrib import files
 
@@ -11,16 +11,16 @@ def do_deploy(archive_path):
     if not os.path.exists(archive_path):
         return False
 
-    arc_path = '/data/web_static/releases/'
-    temp= archive_path.split('.')[0]
-    label = temp.split('/')[1]
-    path = arc_path + name
+    data_path = '/data/web_static/releases/'
+    tmp = archive_path.split('.')[0]
+    label = tmp.split('/')[1]
+    path = data_path + label
 
     try:
-        put(archive_path, 'temp')
+        put(archive_path, '/tmp')
         run('sudo mkdir -p {}'.format(path))
-        run('sudo tar -fzx /temp/{}.tgz -C {}'.format(label, path))
-        run('sudo rm -f /temp/{}.tgz'.format(label))
+        run('sudo tar -xzf /tmp/{}.tgz -C {}'.format(label, path))
+        run('sudo rm -f /tmp/{}.tgz'.format(label))
         run('sudo mv {}/web_static/* {}/'.format(path, path))
         run('sudo rm -rf {}/web_static'.format(path))
         run('sudo rm -rf /data/web_static/current')
