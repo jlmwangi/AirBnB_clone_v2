@@ -34,5 +34,20 @@ def is_cool(text="is cool"):
     return f"Python {text}"
 
 
+@app.route('/number/<n>', strict_slashes=False)
+def numbern(n):
+    """display n only if its an int"""
+    try:
+        n_int = int(n)
+        return f"{n_int} is a number"
+    except Exception:
+        return """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        <title>404 Not Found</title>
+        <h1>Not Found</h1>
+        <p>The requested URL was not found on the server.\
+                If you entered the URL manually please check \
+                your spelling and try again.</p>"""
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
