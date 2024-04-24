@@ -35,7 +35,10 @@ class DBStorage:
         mysql_host = os.getenv("HBNB_MYSQL_HOST", "localhost")
         mysql_db = os.getenv("HBNB_MYSQL_DB")
 
-        self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}".format(mysql_user, mysql_pwd, mysql_host, mysql_db), pool_pre_ping=True)
+        self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}"
+                                      .format(mysql_user, mysql_pwd,
+                                        mysql_host, mysql_db),
+                                       pool_pre_ping=True)
 
         self.metadata = MetaData(bind=self.__engine)
 
@@ -58,7 +61,7 @@ class DBStorage:
         else:
             for cls in classnames.values():
                 for obj in self.__session.query(cls):
-                    objs[f"{obj.__class__.__name__}.{obj.id}" = obj
+                    objs[f"{obj.__class__.__name__}.{obj.id}"] = obj
 
         return objs
 
@@ -70,7 +73,7 @@ class DBStorage:
         """commit all changes of current db session"""
         self.__session.commit()
 
-    def delete(self, obj=None)
+    def delete(self, obj=None):
         """deletes from current session if obj is not none"""
         if not self.__session:
             self.reload()
@@ -82,3 +85,8 @@ class DBStorage:
         Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Base.metadata.create_all(self.__engine)
         self.__session = scoped_session(Session)
+
+    def close(self):
+        """removes the private session"""
+        if self.__session:
+            self.__session.remove()
