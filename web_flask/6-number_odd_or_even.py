@@ -68,15 +68,13 @@ def html_page(n):
 def even_odd(n):
     """displays html page only if n is an odd or even integer"""
     try:
-        n_int = int(n)
-        return render_template('6-number_odd_or_even.html', n=n_int)
+        n = int(n)
+        return render_template('6-number_odd_or_even.html', n=n)
     except Exception:
-        return """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        return ("""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
         <title>404 Not Found</title>
         <h1>Not Found</h1>
-        <p>The requested URL was not found on the server.\
-                If you entered the URL manually please check\
-                your spelling and try again.</p>"""
+        <p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>""")
 
 
 if __name__ == "__main__":
