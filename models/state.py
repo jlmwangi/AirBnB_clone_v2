@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
 from os import getenv
 from models.city import City
+import models
 
 
 class State(BaseModel, Base):
@@ -26,7 +27,7 @@ class State(BaseModel, Base):
         def cities(self):
             """returns cities"""
             from models import storage
-            cities_val = models.storage.all("City").values()
+            cities_val = models.storage.all(City).values()
             cities_list = []
             for city in cities_val:
                 if city.state_id == self.id:

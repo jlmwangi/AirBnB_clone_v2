@@ -13,6 +13,8 @@ class FileStorage:
         if cls is None:
             return FileStorage.__objects
         else:
+            if not isinstance(cls, type) and not isinstance(cls, tuple):
+                raise TypeError
             return {key:obj for key, obj in FileStorage.__objects.items()
                     if isinstance(obj, cls)}
 

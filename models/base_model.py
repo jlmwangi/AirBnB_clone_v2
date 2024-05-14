@@ -6,6 +6,7 @@ import sqlalchemy
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from os import getenv
+import models
 
 if getenv("HBNB_TYPE_STORAGE") == 'db':
     Base = declarative_base()
@@ -44,8 +45,8 @@ class BaseModel:
         """Updates updated_at with current time when instance is changed"""
         from models import storage
         self.updated_at = datetime.now()
-        model.storage.new(self)
-        model.storage.save()
+        models.storage.new(self)
+        models.storage.save()
 
     def to_dict(self):
         """Convert instance into dict format"""

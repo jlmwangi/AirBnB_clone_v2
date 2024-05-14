@@ -14,6 +14,6 @@ class City(BaseModel, Base):
     name = Column(String(128), nullable=False)
     place = relationship("Place", backref="cities", cascade="all, delete-orphan")
 
-    def __init__(self, *rgs, **kwargs):
+    def __init__(self, *args, **kwargs):
         """initializes class city"""
         super().__init__(*args, **kwargs)
