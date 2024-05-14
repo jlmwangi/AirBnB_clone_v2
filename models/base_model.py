@@ -65,7 +65,7 @@ class BaseModel:
         new_dictionary.pop('_sa_instance_state', None)
         return new_dictionary
 
-    def delete(self)
-    """deletes current instance from storage"""
-    from models import storage
-    models.storage.delete(self)
+    def delete(self):
+        """deletes current instance from storage"""
+        from models import storage
+        models.storage.delete(self)

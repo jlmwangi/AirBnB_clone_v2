@@ -40,7 +40,8 @@ class DBStorage:
                                         mysql_host, mysql_db),
                                        pool_pre_ping=True)
 
-        self.metadata = MetaData(bind=self.__engine)
+        self.metadata = MetaData()
+        self.metadata.bind = self.__engine
 
         hbnb_env = os.getenv("HBNB_ENV")
         if hbnb_env == "test":
