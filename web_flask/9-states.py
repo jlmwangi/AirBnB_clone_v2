@@ -9,25 +9,17 @@ app = Flask(__name__)
 
 
 @app.route('/states', strict_slashes=False)
-def list_state():
-    """fetches states from storage engine"""
-    states = list(storage.all("State").values())
-
-    return render_template('9-states.html', states=states)
-
-
 @app.route('/states/<id>', strict_slashes=False)
-def list_state_id(id):
+def list_state_id(state_id=None):
     """list states found by an id"""
     states = storage.all("State")
-    for state in states:
-        if state.id == id:
-            return render_template('9-states.html', state=state)
-    return render_template('9-states.html')
+    if state_id is not None:
+        state_id = 'State.' +state_id
+    return render_template('9-states.html', states=states, state_id=state_id)
 
 
 @app.teardown_appcontext
-def teardown_context():
+def teardown_context(exception):
     """removes current sqlalchemy session"""
     storage.close()
 
